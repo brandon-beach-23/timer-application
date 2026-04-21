@@ -10,8 +10,7 @@ public class TimerWebSocketController {
 
     @MessageMapping("/test")
     @SendTo("/topic/test")
-    public Greeting greeting (String message) throws Exception {
-        Thread.sleep(1000);
-        return new Greeting ("Hello, " + message);
+    public String handleTest(String message) throws Exception {
+        return "Echo: " + message;
     }
 }
