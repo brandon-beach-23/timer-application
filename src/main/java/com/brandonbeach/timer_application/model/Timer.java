@@ -23,30 +23,28 @@ public class Timer {
     private String name;
 
     @Column(nullable = false)
-    private BigInteger duration;
+    private long duration;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private TimerState state;
 
     @Column(nullable = false)
-    private BigInteger elaspedTime = new BigInteger("0");
+    private long elapsedTime = 0;
 
     @Column(nullable = false)
     private Timestamp lastStartedAt;
 
-    public BigInteger calculateElapsedTime() {
-        return this.elaspedTime + 1;
+    public long calculateElapsedTime() {
+        return this.elapsedTime + 1;
     }
 
-    public BigInteger calculateRemainingTime() {
-        return this.duration - this.elaspedTime;
+    public long calculateRemainingTime() {
+        return this.duration - this.elapsedTime;
     }
 
     public boolean isComplete() {
-        if(this.duration.compareTo(this.elaspedTime.ZERO)){
-            return true;
-        }
+        return this.elapsedTime >= this.duration;
     }
 
     public boolean canChangeState(TimerState state) {
