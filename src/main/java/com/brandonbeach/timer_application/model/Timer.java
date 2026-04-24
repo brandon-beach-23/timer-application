@@ -82,4 +82,10 @@ public class Timer {
         }
     }
 
+    public void stop() {
+        if (this.state == TimerState.RUNNING || this.state == TimerState.PAUSED) {
+            this.state = TimerState.STOPPED;
+        }
+    }
+
 }

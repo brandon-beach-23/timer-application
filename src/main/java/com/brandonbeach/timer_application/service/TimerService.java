@@ -36,12 +36,15 @@ public class TimerService {
     }
 
     public void stopTimer() {
-        // 1. Verify a timer is currently running
-        // 2. Stop the ticking background thread
-        // 3. Update timer state to STOPPED
-        // 4. Emit the final state
-        // 5. Persist the completed session to database
-        // 6. Clear currentTimer
+
+        // TODO 5. Persist the completed session to database
+        // TODO 6. Clear currentTimer (May handle through button on the UI)
+        if (currentTimer == null || (currentTimer.getState() != TimerState.RUNNING && currentTimer.getState() != TimerState.PAUSED)) {
+            return;
+        }
+        stopTicking();
+        currentTimer.stop();
+        emitSnapshot();
     }
 
     public void pauseTimer() {
