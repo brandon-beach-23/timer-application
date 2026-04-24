@@ -107,6 +107,8 @@ public class TimerService {
         }
         timerDTO = new TimerResponseDTO(currentTimer.getElapsedTime(), currentTimer.getState(), currentTimer.getHasCompleted());
         messagingTemplate.convertAndSend("/topic/timer-updates",  timerDTO);
+        System.out.println("Emitting snapshot: " + timerDTO.getElapsedTime() + ", " + timerDTO.getTimerState());
+
     }
 
     @PostConstruct

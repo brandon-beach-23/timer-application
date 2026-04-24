@@ -17,6 +17,8 @@ public class TimerWebSocketController {
 
     @MessageMapping("/start")
     public void handleStart(TimerRequestDTO timerRequestDTO) {
+        System.out.println("Received start request: " + timerRequestDTO.getTimerName() +
+                ", " + timerRequestDTO.getTimerDuration());
         timerService.startTimer(timerRequestDTO.getTimerName(), timerRequestDTO.getTimerDuration());
     }
     @MessageMapping("/pause")
