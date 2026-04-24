@@ -1,3 +1,5 @@
+package com.brandonbeach.timer_application.service;
+
 import com.brandonbeach.timer_application.model.Timer;
 import com.brandonbeach.timer_application.model.TimerState;
 import jakarta.annotation.PostConstruct;
@@ -22,11 +24,6 @@ public class TimerService {
     }
 
     public void startTimer(String name, long durationInSeconds) {
-        // 1. Verify there is not a Timer already running.
-        // 2. Create a new Timer object initializing name, duration, state, elapsed time, and lastStartedAt
-        // 3. Validate state change using canChangeState()
-        // 4. Start the ticking background thread
-        // 5. Emit the state to all connected WebSocket clients
         if (currentTimer != null && currentTimer.getState() == TimerState.RUNNING) {
             return;
         }
@@ -48,10 +45,13 @@ public class TimerService {
     }
 
     public void pauseTimer() {
-        // 1. Verify timer is RUNNING (not already paused)
-        // 2. Stop the ticking background thread
-        // 3. Update timer state to PAUSED
-        // 4. Emit the paused state
+        if (currentTimer == null || currentTimer.getState() == TimerState.PAUSED) {
+            return;
+        }
+
+        stopTicking();
+        currentTimer.pause();
+        emitSnapshot();
     }
 
     public void resumeTimer() {
@@ -79,8 +79,6 @@ public class TimerService {
     }
 
     private void stopTicking() {
-        // Cancel the tickingTask if it exists
-        // Set tickingTask to null
         if(tickingTask != null) {
             tickingTask.cancel(false);
             tickingTask = null;
