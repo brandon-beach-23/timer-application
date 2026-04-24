@@ -8,12 +8,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class TimerDTO {
+public class TimerResponseDTO {
     private long elapsedTime;
     private TimerState timerState;
     private boolean hasCompleted;
 
-    public TimerDTO(long elapsedTime, TimerState timerState, boolean hasCompleted) {
+    public TimerResponseDTO(long elapsedTime, TimerState timerState, boolean hasCompleted) {
         this.elapsedTime = elapsedTime;
         this.timerState = timerState;
         this.hasCompleted = hasCompleted;

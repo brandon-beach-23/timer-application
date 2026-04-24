@@ -1,6 +1,6 @@
 package com.brandonbeach.timer_application.service;
 
-import com.brandonbeach.timer_application.dto.TimerDTO;
+import com.brandonbeach.timer_application.dto.TimerResponseDTO;
 import com.brandonbeach.timer_application.model.Timer;
 import com.brandonbeach.timer_application.model.TimerState;
 import jakarta.annotation.PostConstruct;
@@ -19,7 +19,7 @@ public class TimerService {
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private ScheduledFuture<?> tickingTask;
     private final SimpMessagingTemplate messagingTemplate;
-    private TimerDTO timerDTO;
+    private TimerResponseDTO timerDTO;
 
     public TimerService(SimpMessagingTemplate messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
@@ -105,7 +105,7 @@ public class TimerService {
        if (currentTimer == null) {
             return;
         }
-        timerDTO = new TimerDTO(currentTimer.getElapsedTime(), currentTimer.getState(), currentTimer.getHasCompleted());
+        timerDTO = new TimerResponseDTO(currentTimer.getElapsedTime(), currentTimer.getState(), currentTimer.getHasCompleted());
         messagingTemplate.convertAndSend("/topic/timer-updates",  timerDTO);
     }
 
