@@ -45,8 +45,8 @@ public class Timer {
         this.state = TimerState.INITIAL;
     }
 
-    public long calculateElapsedTime() {
-        return this.elapsedTime + 1;
+    public void incrementElapsedTime() {
+        this.elapsedTime++;
     }
 
     public long calculateRemainingTime() {

@@ -37,8 +37,8 @@ public class TimerService {
 
     public void stopTimer() {
 
-        // TODO 5. Persist the completed session to database
-        // TODO 6. Clear currentTimer (May handle through button on the UI)
+        // TODO: 5. Persist the completed session to database
+        // TODO: 6. Clear currentTimer (May handle through button on the UI)
         if (currentTimer == null || (currentTimer.getState() != TimerState.RUNNING && currentTimer.getState() != TimerState.PAUSED)) {
             return;
         }
@@ -91,13 +91,9 @@ public class TimerService {
     }
 
     private void tick() {
-        // 1. Increment elapsed time by 1 second
-        // 2. Check if timer is now complete
-        // 3. If complete, play a sound clip
-        // 4. Emit updated state to WebSocket clients
-        currentTimer.setElapsedTime(currentTimer.getElapsedTime() + 1);
+        currentTimer.incrementElapsedTime();
         if(currentTimer.isComplete()){
-            // Play a sound
+            // TODO: Play a sound
         }
         emitSnapshot();
     }
