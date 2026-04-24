@@ -30,10 +30,20 @@ public class Timer {
     private TimerState state;
 
     @Column(nullable = false)
-    private long elapsedTime = 0;
+    private long elapsedTime;
 
     @Column(nullable = false)
     private Timestamp lastStartedAt;
+
+    public Timer() {
+
+    }
+
+    public Timer(String name, long duration) {
+        this.name = name;
+        this.duration = duration;
+        this.state = TimerState.INITIAL;
+    }
 
     public long calculateElapsedTime() {
         return this.elapsedTime + 1;
@@ -50,4 +60,13 @@ public class Timer {
     public boolean canChangeState(TimerState state) {
         return this.state != state;
     }
+
+    public void start(Timestamp now) {
+        if (this.state == TimerState.INITIAL) {
+            this.state = TimerState.RUNNING;
+            this.elapsedTime = 0;
+            this.lastStartedAt = now;
+        }
+    }
+
 }
