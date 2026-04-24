@@ -43,7 +43,9 @@ public class TimerService {
             return;
         }
         stopTicking();
-        currentTimer.stop();
+        if (!currentTimer.isComplete()){
+            currentTimer.stop();
+        } else { currentTimer.complete(); }
         emitSnapshot();
     }
 
@@ -91,8 +93,13 @@ public class TimerService {
     private void tick() {
         // 1. Increment elapsed time by 1 second
         // 2. Check if timer is now complete
-        // 3. If complete, stop ticking and update state to COMPLETED
+        // 3. If complete, play a sound clip
         // 4. Emit updated state to WebSocket clients
+        currentTimer.setElapsedTime(currentTimer.getElapsedTime() + 1);
+        if(currentTimer.isComplete()){
+            // Play a sound
+        }
+        emitSnapshot();
     }
 
     private void emitSnapshot() {

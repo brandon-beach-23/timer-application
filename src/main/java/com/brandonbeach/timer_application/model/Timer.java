@@ -88,4 +88,9 @@ public class Timer {
         }
     }
 
+    public void complete() {
+        if ((this.state == TimerState.RUNNING || this.state == TimerState.PAUSED) && this.isComplete()) {
+            this.state = TimerState.COMPLETED;
+        }
+    }
 }
