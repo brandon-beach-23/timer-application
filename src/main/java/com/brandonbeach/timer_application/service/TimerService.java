@@ -55,18 +55,18 @@ public class TimerService {
     }
 
     public void resumeTimer() {
-        // 1. Verify timer is PAUSED
-        // 2. Update lastStartedAt to now (to account for pause duration)
-        // 3. Start the ticking background thread again
-        // 4. Update state to RUNNING
-        // 5. Emit the resumed state
+       if (currentTimer == null || currentTimer.getState() != TimerState.PAUSED) {
+            return;
+        }
+
+        Timestamp now = Timestamp.from(Instant.now());
+        startTicking();
+        currentTimer.resume(now);
+        emitSnapshot();
     }
 
     private void startTicking() {
-        // Schedule tick() to run every 1 second
-        // Store the ScheduledFuture in tickingTask so we can cancel it later
-
-        if (tickingTask != null &&  !tickingTask.isCancelled()) {
+       if (tickingTask != null &&  !tickingTask.isCancelled()) {
             return;
         }
 

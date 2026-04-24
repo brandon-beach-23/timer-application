@@ -75,4 +75,11 @@ public class Timer {
         }
     }
 
+    public void resume(Timestamp now){
+        if (this.state == TimerState.PAUSED) {
+            this.state = TimerState.RUNNING;
+            this.lastStartedAt = now;
+        }
+    }
+
 }
