@@ -1,5 +1,6 @@
 package com.brandonbeach.timer_application.service;
 
+import com.brandonbeach.timer_application.dto.TimerDTO;
 import com.brandonbeach.timer_application.model.Timer;
 import com.brandonbeach.timer_application.model.TimerState;
 import jakarta.annotation.PostConstruct;
@@ -18,6 +19,7 @@ public class TimerService {
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private ScheduledFuture<?> tickingTask;
     private final SimpMessagingTemplate messagingTemplate;
+    private TimerDTO timerDTO;
 
     public TimerService(SimpMessagingTemplate messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
@@ -92,15 +94,19 @@ public class TimerService {
 
     private void tick() {
         currentTimer.incrementElapsedTime();
-        if(currentTimer.isComplete()){
+        if(currentTimer.isComplete() && !currentTimer.getHasCompleted()){
+            currentTimer.complete();
             // TODO: Play a sound
         }
         emitSnapshot();
     }
 
     private void emitSnapshot() {
-        // Send current timer state to all connected WebSocket clients
-        // via messagingTemplate.convertAndSend("/topic/timer-updates", snapshot)
+       if (currentTimer == null) {
+            return;
+        }
+        timerDTO = new TimerDTO(currentTimer.getElapsedTime(), currentTimer.getState(), currentTimer.getHasCompleted());
+        messagingTemplate.convertAndSend("/topic/timer-updates",  timerDTO);
     }
 
     @PostConstruct

@@ -2,9 +2,9 @@ package com.brandonbeach.timer_application.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigInteger;
 import java.sql.Timestamp;
 
 
@@ -12,12 +12,12 @@ import java.sql.Timestamp;
 @Table(name = "timers")
 @Getter
 @Setter
+@NoArgsConstructor
 public class Timer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
 
     @Column(nullable = false)
     private String name;
@@ -35,14 +35,14 @@ public class Timer {
     @Column(nullable = false)
     private Timestamp lastStartedAt;
 
-    public Timer() {
-
-    }
+    @Column(nullable = false)
+    private boolean hasCompleted;
 
     public Timer(String name, long duration) {
         this.name = name;
         this.duration = duration;
         this.state = TimerState.INITIAL;
+        this.hasCompleted = false;
     }
 
     public void incrementElapsedTime() {
@@ -90,7 +90,11 @@ public class Timer {
 
     public void complete() {
         if ((this.state == TimerState.RUNNING || this.state == TimerState.PAUSED) && this.isComplete()) {
-            this.state = TimerState.COMPLETED;
+            this.hasCompleted = true;
         }
+    }
+
+    public boolean getHasCompleted() {
+        return this.hasCompleted;
     }
 }
