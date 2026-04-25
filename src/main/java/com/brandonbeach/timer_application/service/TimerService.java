@@ -60,6 +60,7 @@ public class TimerService {
         currentTimer.stop();
         saveTimerSession();
         emitSnapshot();
+        broadcastTimerHistory();
         currentTimer = null;
     }
 
@@ -137,10 +138,12 @@ public class TimerService {
         System.out.println("Timer Session was saved!");
     }
 
-    public List<TimerSessionResponseDTO> findAll() {
-        return timerSessionRepository.findAll().stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
+    public void broadcastTimerHistory() {
+        List<TimerSessionResponseDTO> timerSessionsResponseDTOs = timerSessionRepository.findAll().stream()
+            .map(this::convertToDTO)
+            .collect(Collectors.toList());
+
+        messagingTemplate.convertAndSend("/topic/timer-history", timerSessionsResponseDTOs);
     }
 
     private TimerSessionResponseDTO convertToDTO (TimerSession timerSession) {

@@ -36,4 +36,8 @@ public class TimerWebSocketController {
         timerService.stopTimer();
     }
 
+    @MessageMapping("/history")
+    public void handleHistoryRequest() {
+        timerService.broadcastTimerHistory();
+    }
 }
