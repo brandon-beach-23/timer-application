@@ -8,34 +8,18 @@ import lombok.Setter;
 import java.sql.Timestamp;
 
 
-@Entity
-@Table(name = "timers")
+
 @Getter
 @Setter
 @NoArgsConstructor
 public class Timer {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
-    @Column(nullable = false)
     private String name;
-
-    @Column(nullable = false)
     private long duration;
-
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private TimerState state;
-
-    @Column(nullable = false)
     private long elapsedTime;
-
-    @Column(nullable = false)
     private Timestamp lastStartedAt;
-
-    @Column(nullable = false)
     private boolean hasCompleted;
 
     public Timer(String name, long duration) {
