@@ -142,7 +142,7 @@ public class TimerService {
         List<TimerSessionResponseDTO> timerSessionsResponseDTOs = timerSessionRepository.findAll().stream()
             .map(this::convertToDTO)
             .collect(Collectors.toList());
-
+        System.out.println("Broadcasting: " + timerSessionsResponseDTOs.size() + timerSessionsResponseDTOs);
         messagingTemplate.convertAndSend("/topic/timer-history", timerSessionsResponseDTOs);
     }
 

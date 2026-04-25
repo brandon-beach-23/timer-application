@@ -38,6 +38,7 @@ public class TimerWebSocketController {
 
     @MessageMapping("/history")
     public void handleHistoryRequest() {
+        System.out.println("Received history request");
         timerService.broadcastTimerHistory();
     }
 }
