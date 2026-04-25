@@ -1,6 +1,7 @@
 package com.brandonbeach.timer_application.service;
 
 import com.brandonbeach.timer_application.dto.TimerResponseDTO;
+import com.brandonbeach.timer_application.dto.TimerSessionResponseDTO;
 import com.brandonbeach.timer_application.model.Timer;
 import com.brandonbeach.timer_application.model.TimerSession;
 import com.brandonbeach.timer_application.model.TimerState;
@@ -12,7 +13,9 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.List;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 @Service
 public class TimerService {
@@ -132,6 +135,25 @@ public class TimerService {
 
         timerSessionRepository.save(timerSession);
         System.out.println("Timer Session was saved!");
+    }
+
+    public List<TimerSessionResponseDTO> findAll() {
+        return timerSessionRepository.findAll().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    private TimerSessionResponseDTO convertToDTO (TimerSession timerSession) {
+        TimerSessionResponseDTO timerSessionResponseDTO = new TimerSessionResponseDTO(
+                timerSession.getTimerName(),
+                timerSession.getDuration(),
+                timerSession.getElapsedTime(),
+                timerSession.getTimerState(),
+                timerSession.isHasCompleted(),
+                timerSession.getCreatedAt(),
+                timerSession.getStoppedAt()
+        );
+        return timerSessionResponseDTO;
     }
 
     @PostConstruct
