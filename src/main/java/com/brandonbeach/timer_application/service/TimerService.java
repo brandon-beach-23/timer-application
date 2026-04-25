@@ -2,7 +2,9 @@ package com.brandonbeach.timer_application.service;
 
 import com.brandonbeach.timer_application.dto.TimerResponseDTO;
 import com.brandonbeach.timer_application.model.Timer;
+import com.brandonbeach.timer_application.model.TimerSession;
 import com.brandonbeach.timer_application.model.TimerState;
+import com.brandonbeach.timer_application.repository.TimerSessionRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -17,12 +19,17 @@ public class TimerService {
 
     private Timer currentTimer;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private final TimerSessionRepository timerSessionRepository;
     private ScheduledFuture<?> tickingTask;
     private final SimpMessagingTemplate messagingTemplate;
     private TimerResponseDTO timerDTO;
+    private Timestamp startTime;
+    private Timestamp endTime;
 
-    public TimerService(SimpMessagingTemplate messagingTemplate) {
+
+    public TimerService(SimpMessagingTemplate messagingTemplate,TimerSessionRepository timerSessionRepository) {
         this.messagingTemplate = messagingTemplate;
+        this.timerSessionRepository = timerSessionRepository;
     }
 
     public void startTimer(String name, long durationInSeconds) {
@@ -33,22 +40,24 @@ public class TimerService {
         Timestamp now = Timestamp.from(Instant.now());
         currentTimer = new Timer(name, durationInSeconds);
         currentTimer.start(now);
+        this.startTime = now;
         startTicking();
         emitSnapshot();
     }
 
     public void stopTimer() {
 
-        // TODO: 5. Persist the completed session to database
-        // TODO: 6. Clear currentTimer (May handle through button on the UI)
         if (currentTimer == null || (currentTimer.getState() != TimerState.RUNNING && currentTimer.getState() != TimerState.PAUSED)) {
             return;
         }
+
+        Timestamp now = Timestamp.from(Instant.now());
+        this.endTime = now;
         stopTicking();
-        if (!currentTimer.isComplete()){
-            currentTimer.stop();
-        } else { currentTimer.complete(); }
+        currentTimer.stop();
+        saveTimerSession();
         emitSnapshot();
+        currentTimer = null;
     }
 
     public void pauseTimer() {
@@ -96,7 +105,6 @@ public class TimerService {
         currentTimer.incrementElapsedTime();
         if(currentTimer.isComplete() && !currentTimer.getHasCompleted()){
             currentTimer.complete();
-            // TODO: Play a sound
         }
         emitSnapshot();
     }
@@ -109,6 +117,21 @@ public class TimerService {
         messagingTemplate.convertAndSend("/topic/timer-updates",  timerDTO);
         System.out.println("Emitting snapshot: " + timerDTO.getElapsedTime() + ", " + timerDTO.getTimerState());
 
+    }
+
+    private void saveTimerSession() {
+        TimerSession timerSession = new TimerSession(
+                currentTimer.getName(),
+                currentTimer.getDuration(),
+                currentTimer.getElapsedTime(),
+                currentTimer.getState(),
+                currentTimer.getHasCompleted(),
+                this.startTime,
+                this.endTime
+        );
+
+        timerSessionRepository.save(timerSession);
+        System.out.println("Timer Session was saved!");
     }
 
     @PostConstruct

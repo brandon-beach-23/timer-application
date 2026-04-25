@@ -1,6 +1,7 @@
 package com.brandonbeach.timer_application.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -38,5 +39,15 @@ public class TimerSession {
 
     @Column(nullable = false)
     private Timestamp stoppedAt;
+
+    public TimerSession(String timerName, long duration, long elapsedTime, TimerState timerState, boolean hasCompleted, Timestamp createdAt, Timestamp stoppedAt) {
+        this.timerName = timerName;
+        this.duration = duration;
+        this.elapsedTime = elapsedTime;
+        this.timerState = timerState;
+        this.hasCompleted = hasCompleted;
+        this.createdAt = createdAt;
+        this.stoppedAt = stoppedAt;
+    }
 }
 
