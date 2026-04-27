@@ -35,6 +35,10 @@ public class TimerService {
         this.timerSessionRepository = timerSessionRepository;
     }
 
+    public Timer getCurrentTimer() {
+        return currentTimer;
+    }
+
     public void startTimer(String name, long durationInSeconds) {
         if (currentTimer != null && currentTimer.getState() == TimerState.RUNNING) {
             return;
